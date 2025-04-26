@@ -58,7 +58,7 @@ class ElfAI extends GameAI
 {
     protected function construirEstruturas(): void
     {
-        echo "Elfos: Construindo templos e arvores sagradas.\n";
+        echo "Elfos: Construindo templos e árvores sagradas.\n";
         // Lógica de construção de templos e árvores
         $this->builtStructures[] = "Templo";
     }
@@ -91,6 +91,26 @@ class UndeadAI extends GameAI
     }
 }
 
+// Classe concreta para os Orcs
+class OrcAI extends GameAI
+{
+    protected function construirEstruturas(): void
+    {
+        echo "Orcs: Construindo ferreiros e barracas.\n";
+        // Lógica de construção de ferreiros e barracas
+        $this->builtStructures[] = "Ferreiro";
+        $this->builtStructures[] = "Barraca";
+    }
+
+    protected function construirUnidades(): void
+    {
+        echo "Orcs: Construindo guerreiros e brutos.\n";
+        // Lógica de construção de unidades
+        $this->units[] = "Guerreiro";
+        $this->units[] = "Bruto";
+    }
+}
+
 // Exemplo de uso:
 
 // Humanos jogando
@@ -111,3 +131,10 @@ echo "\n";
 echo "Turno dos Mortos-Vivos:\n";
 $undeadAI = new UndeadAI();
 $undeadAI->turno();  // Chama o método turno(), que chama os outros métodos internamente
+
+echo "\n";
+
+// Orcs jogando
+echo "Turno dos Orcs:\n";
+$orcAI = new OrcAI();
+$orcAI->turno();  // Chama o método turno(), que chama os outros métodos internamente
