@@ -1,10 +1,12 @@
 <?php
 
+// A interface Strategy declara a operação comum
 interface Strategy
 {
     public function execute(int $a, int $b): int;
 }
 
+// Estratégia concreta de adição
 class ConcreteStrategyAdd implements Strategy
 {
     public function execute(int $a, int $b): int
@@ -13,6 +15,7 @@ class ConcreteStrategyAdd implements Strategy
     }
 }
 
+// Estratégia concreta de subtração
 class ConcreteStrategySubtract implements Strategy
 {
     public function execute(int $a, int $b): int
@@ -21,6 +24,7 @@ class ConcreteStrategySubtract implements Strategy
     }
 }
 
+// Estratégia concreta de multiplicação
 class ConcreteStrategyMultiply implements Strategy
 {
     public function execute(int $a, int $b): int
@@ -29,6 +33,7 @@ class ConcreteStrategyMultiply implements Strategy
     }
 }
 
+// O Contexto mantém a estratégia atual
 class Context
 {
     private Strategy $strategy;
@@ -44,46 +49,45 @@ class Context
     }
 }
 
+// Código cliente
 class ExampleApplication
 {
-    private Context $context;
-
-    public function __construct()
-    {
-        $this->context = new Context();
-    }
-
     public function main(): void
     {
+        $context = new Context();
+
+        // Lê o primeiro número
         echo "Digite o primeiro número: ";
-        $firstNumber = (int)trim(fgets(STDIN));
+        $firstNumber = (int) trim(fgets(STDIN));
 
+        // Lê o segundo número
         echo "Digite o segundo número: ";
-        $secondNumber = (int)trim(fgets(STDIN));
+        $secondNumber = (int) trim(fgets(STDIN));
 
-        echo "Digite a ação desejada (+, -, *): ";
+        // Lê o símbolo da operação desejada
+        echo "Digite a operação desejada (+, -, *): ";
         $action = trim(fgets(STDIN));
 
-        switch ($action) {
-            case '+':
-                $this->context->setStrategy(new ConcreteStrategyAdd());
-                break;
-            case '-':
-                $this->context->setStrategy(new ConcreteStrategySubtract());
-                break;
-            case '*':
-                $this->context->setStrategy(new ConcreteStrategyMultiply());
-                break;
-            default:
-                echo "Ação inválida.\n";
-                exit(1);
+        // Define a estratégia conforme o símbolo
+        if ($action === '+') {
+            $context->setStrategy(new ConcreteStrategyAdd());
+        } elseif ($action === '-') {
+            $context->setStrategy(new ConcreteStrategySubtract());
+        } elseif ($action === '*') {
+            $context->setStrategy(new ConcreteStrategyMultiply());
+        } else {
+            echo "Operação inválida.\n";
+            exit(1);
         }
 
-        $result = $this->context->executeStrategy($firstNumber, $secondNumber);
+        // Executa a estratégia escolhida
+        $result = $context->executeStrategy($firstNumber, $secondNumber);
 
+        // Imprime o resultado
         echo "Resultado: $result\n";
     }
 }
 
+// Execução do aplicativo
 $app = new ExampleApplication();
 $app->main();
