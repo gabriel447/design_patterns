@@ -1,121 +1,114 @@
 <?php
-// Exemplo do padrão Observer para sistema de assinantes de newsletter
-// Comentários e saída em português
 
-// Gerenciador de eventos que mantém os listeners por tipo de evento
-class EventManager
+// A classe que gerencia os eventos e os ouvintes (listeners)
+class Evento
 {
-    private $listeners = [];
+    private $ouvintes = [];
 
-    // Inscreve um listener para um tipo de evento
-    public function subscribe(string $eventType, callable $listener)
+    // Inscreve um ouvinte para um tipo de evento
+    public function inscrever($evento, $ouvinte)
     {
-        if (!isset($this->listeners[$eventType])) {
-            $this->listeners[$eventType] = [];
-        }
-        $this->listeners[$eventType][] = $listener;
+        $this->ouvintes[$evento][] = $ouvinte;
     }
 
-    // Remove um listener para um tipo de evento
-    public function unsubscribe(string $eventType, callable $listenerToRemove)
+    // Notifica todos os ouvintes sobre um evento
+    public function notificar($evento, $dado)
     {
-        if (isset($this->listeners[$eventType])) {
-            $this->listeners[$eventType] = array_filter(
-                $this->listeners[$eventType],
-                function ($listener) use ($listenerToRemove) {
-                    // Comparação simples para closures or callables
-                    return $listener !== $listenerToRemove;
-                }
-            );
-        }
-    }
-
-    // Notifica todos os listeners inscritos para um tipo de evento
-    public function notify(string $eventType, $data = null)
-    {
-        if (isset($this->listeners[$eventType])) {
-            foreach ($this->listeners[$eventType] as $listener) {
-                call_user_func($listener, $data);
+        if (isset($this->ouvintes[$evento])) {
+            foreach ($this->ouvintes[$evento] as $ouvinte) {
+                $ouvinte($dado);
             }
         }
     }
 }
 
-// Sistema de newsletter que usa o EventManager para gerenciar assinaturas
+// A classe da Newsletter
 class Newsletter
 {
-    public $events;
-    private $subscribers = [];
+    private $evento;
+    private $inscritos = [];
+    private $cancelados = [];
 
     public function __construct()
     {
-        $this->events = new EventManager();
+        $this->evento = new Evento();
     }
 
-    // Método para assinar a newsletter
-    public function subscribeUser(string $email)
+    // Inscreve o usuário na newsletter
+    public function inscreverUsuario($email)
     {
-        if (!in_array($email, $this->subscribers)) {
-            $this->subscribers[] = $email;
-            echo "Newsletter: Usuário '{$email}' assinou a newsletter.\n";
-            $this->events->notify("subscribe", $email);
+        if (!in_array($email, $this->inscritos)) {
+            $this->inscritos[] = $email;
+            echo "🎉 O usuário {$email} se inscreveu! Vamos enviar um e-mail de boas-vindas.\n";
+            $this->evento->notificar("inscricao", $email);
         } else {
-            echo "Newsletter: Usuário '{$email}' já está inscrito.\n";
+            echo "📩 O usuário {$email} já está inscrito!\n";
         }
     }
 
-    // Método para cancelar a assinatura
-    public function unsubscribeUser(string $email)
+    // Cancela a inscrição do usuário
+    public function cancelarInscricao($email)
     {
-        if (($key = array_search($email, $this->subscribers)) !== false) {
-            unset($this->subscribers[$key]);
-            echo "Newsletter: Usuário '{$email}' cancelou a assinatura.\n";
-            $this->events->notify("unsubscribe", $email);
+        if (($key = array_search($email, $this->inscritos)) !== false) {
+            unset($this->inscritos[$key]);
+            $this->cancelados[] = $email;
+            echo "❌ O usuário {$email} cancelou a inscrição.\n";
+            $this->evento->notificar("cancelamento", $email);
         } else {
-            echo "Newsletter: Usuário '{$email}' não está inscrito.\n";
+            echo "⚠️ O usuário {$email} não está inscrito.\n";
         }
     }
-}
 
-// Listener que envia email quando o usuário assina
-class EmailSubscriptionListener
-{
-    public function update($email)
+    // Envia a newsletter para todos os inscritos, exceto os cancelados
+    public function enviarNewsletter()
     {
-        echo "EmailSubscriptionListener: Enviando email de boas-vindas para {$email}.\n";
+        echo "\n🔔 Enviando newsletter para os inscritos...\n";
+
+        // Envia para todos os que não cancelaram
+        foreach ($this->inscritos as $email) {
+            echo "📧 Enviando newsletter para {$email}...\n";
+        }
+
+        // Avisando os cancelados
+        $this->evento->notificar("avisarCancelados", $this->cancelados);
+    }
+
+    // Inscreve um ouvinte nos eventos de inscrição ou cancelamento
+    public function adicionarOuvinte($evento, $ouvinte)
+    {
+        $this->evento->inscrever($evento, $ouvinte);
     }
 }
 
-// Listener que confirma cancelamento de assinatura
-class EmailUnsubscriptionListener
-{
-    public function update($email)
-    {
-        echo "EmailUnsubscriptionListener: Confirmando cancelamento para {$email}.\n";
-    }
-}
+// Função que envia o e-mail de boas-vindas
+$boasVindas = function($email) {
+    echo "📧 Enviando e-mail de boas-vindas para {$email}.\n";
+};
 
-// Demonstração do uso
+// Função que confirma o cancelamento
+$confirmarCancelamento = function($email) {
+    echo "📩 Confirmando o cancelamento de {$email}.\n";
+};
+
+// Função que avisa aos inscritos que um cancelamento ocorreu
+$avisarCancelados = function($cancelados) {
+    foreach ($cancelados as $email) {
+        echo "🚫 O usuário {$email} não receberá a newsletter, pois cancelou a inscrição.\n";
+    }
+};
+
+// Criando a instância da Newsletter
 $newsletter = new Newsletter();
 
-$subscriptionListener = new EmailSubscriptionListener();
-$unsubscriptionListener = new EmailUnsubscriptionListener();
+// Adicionando ouvintes
+$newsletter->adicionarOuvinte("inscricao", $boasVindas);
+$newsletter->adicionarOuvinte("cancelamento", $confirmarCancelamento);
+$newsletter->adicionarOuvinte("avisarCancelados", $avisarCancelados);
 
-// Inscreve os listeners nos eventos
-$newsletter->events->subscribe("subscribe", [$subscriptionListener, 'update']);
-$newsletter->events->subscribe("unsubscribe", [$unsubscriptionListener, 'update']);
-
-// Usuários assinam e cancelam a newsletter
-$newsletter->subscribeUser("usuario1@example.com");
-$newsletter->subscribeUser("usuario2@example.com");
-$newsletter->unsubscribeUser("usuario1@example.com");
-
-// Usuário 1 cancela a assinatura e não deve mais receber emails
-// Para simular isso, removemos o listener de subscribe para o usuário 1
-// Como o EventManager não gerencia listeners por usuário, essa simulação é limitada
-
-// Tentamos notificar novamente a inscrição para usuario1 (não deve acontecer pois ele cancelou)
-$newsletter->subscribeUser("usuario1@example.com"); // Deve mostrar que já está inscrito, pois re-adicionamos no array
-
-// Notifica um novo usuário
-$newsletter->subscribeUser("usuario3@example.com");
+// Testando
+$newsletter->inscreverUsuario("joao@exemplo.com");
+$newsletter->inscreverUsuario("maria@exemplo.com");
+$newsletter->cancelarInscricao("joao@exemplo.com"); // João cancela a inscrição
+$newsletter->enviarNewsletter();
+$newsletter->inscreverUsuario("ana@exemplo.com");
+$newsletter->enviarNewsletter();
