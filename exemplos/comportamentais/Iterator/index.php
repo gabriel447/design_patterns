@@ -42,15 +42,25 @@ class NintendoGamesCollection implements Iterator
     }
 }
 
-// Coleção de jogos famosos da Nintendo solicitados
+// Coleção de jogos mais famosos da Nintendo
 $games = new NintendoGamesCollection([
-    ['title' => 'The Legend of Zelda: A Link to the Past', 'year' => 1991, 'genre' => 'Aventura'],
-    ['title' => 'Super Mario World', 'year' => 1990, 'genre' => 'Plataforma'],
-    ['title' => 'Top Gear', 'year' => 1992, 'genre' => 'Corrida'],
+    ['title' => 'Super Mario Bros.', 'year' => 1985, 'genre' => 'Plataforma'],
+    ['title' => 'The Legend of Zelda: Ocarina of Time', 'year' => 1998, 'genre' => 'Aventura'],
+    ['title' => 'Super Mario 64', 'year' => 1996, 'genre' => 'Plataforma'],
+    ['title' => 'The Legend of Zelda: Breath of the Wild', 'year' => 2017, 'genre' => 'Aventura'],
+    ['title' => 'Pokémon Red/Blue', 'year' => 1996, 'genre' => 'RPG'],
     ['title' => 'Donkey Kong Country', 'year' => 1994, 'genre' => 'Plataforma'],
+    ['title' => 'Metroid Prime', 'year' => 2002, 'genre' => 'Aventura'],
+    ['title' => 'Super Smash Bros. Ultimate', 'year' => 2018, 'genre' => 'Luta'],
+    ['title' => 'Animal Crossing: New Horizons', 'year' => 2020, 'genre' => 'Simulação'],
+    ['title' => 'Mario Kart 8 Deluxe', 'year' => 2017, 'genre' => 'Corrida'],
+    ['title' => 'Splatoon 2', 'year' => 2017, 'genre' => 'Tiro'],
+    ['title' => 'Fire Emblem: Three Houses', 'year' => 2019, 'genre' => 'Estratégia'],
+    ['title' => 'Super Mario Odyssey', 'year' => 2017, 'genre' => 'Plataforma'],
+    ['title' => 'Luigi\'s Mansion 3', 'year' => 2019, 'genre' => 'Aventura'],
 ]);
 
-echo "Jogos da Nintendo:\n";
+echo "Jogos mais famosos da Nintendo:\n";
 foreach ($games as $key => $game) {
     echo "Jogo na posição {$key}: {$game['title']} ({$game['year']}) - Gênero: {$game['genre']}\n";
 }
