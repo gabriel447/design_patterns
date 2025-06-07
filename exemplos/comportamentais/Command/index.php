@@ -14,7 +14,7 @@ class PedidoComando implements Comando {
     }
 
     public function executar() {
-        echo "Pedido recebido: " . $this->pedido . PHP_EOL;
+        echo "Pedido recebido: " . $this->pedido . PHP_EOL . PHP_EOL;
     }
 }
 
@@ -27,7 +27,7 @@ class CozinharComando implements Comando {
     }
 
     public function executar() {
-        echo "Cozinhando a refeição: " . $this->pedido . PHP_EOL;
+        echo "Cozinhando a refeição: " . $this->pedido . PHP_EOL . PHP_EOL;
     }
 }
 
@@ -40,7 +40,7 @@ class ServirComando implements Comando {
     }
 
     public function executar() {
-        echo "Servindo a refeição: " . $this->pedido . PHP_EOL;
+        echo "Servindo a refeição: " . $this->pedido . PHP_EOL . PHP_EOL;
     }
 }
 
