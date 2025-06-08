@@ -77,9 +77,8 @@ echo "Valor base: R$ " . number_format($amount, 2, ',', '.') . "\n";
 echo "Imposto total calculado (ICMS + ISS + IPI): R$ " . number_format($totalTax, 2, ',', '.') . "\n";
 
 // Exemplo de remoção dinâmica: calcular sem ISS
-$taxCalculatorWithoutISS = new IPIDecorator(new ICMSDecorator($basicCalculator));
-$totalTaxWithoutISS = $taxCalculatorWithoutISS->calculate($amount);
-
-echo "\nImposto total calculado (ICMS + IPI, sem ISS): R$ " . number_format($totalTaxWithoutISS, 2, ',', '.') . "\n";
+// $taxCalculatorWithoutISS = new IPIDecorator(new ICMSDecorator($basicCalculator));
+// $totalTaxWithoutISS = $taxCalculatorWithoutISS->calculate($amount);
+// echo "\nImposto total calculado (ICMS + IPI, sem ISS): R$ " . number_format($totalTaxWithoutISS, 2, ',', '.') . "\n";
 
 ?>
