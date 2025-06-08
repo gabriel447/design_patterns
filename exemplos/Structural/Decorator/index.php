@@ -59,13 +59,27 @@ $amount = 1000.0;
 
 $basicCalculator = new BasicTaxCalculator();
 
-$icmsCalculator = new ICMSDecorator($basicCalculator);
-$issCalculator = new ISSDecorator($icmsCalculator);
-$ipiCalculator = new IPIDecorator($issCalculator);
+// Adicionando dinamicamente os decoradores
+$taxCalculator = $basicCalculator;
 
-$totalTax = $ipiCalculator->calculate($amount);
+// Adiciona ICMS
+$taxCalculator = new ICMSDecorator($taxCalculator);
+
+// Adiciona ISS
+$taxCalculator = new ISSDecorator($taxCalculator);
+
+// Adiciona IPI
+$taxCalculator = new IPIDecorator($taxCalculator);
+
+$totalTax = $taxCalculator->calculate($amount);
 
 echo "Valor base: R$ " . number_format($amount, 2, ',', '.') . "\n";
 echo "Imposto total calculado (ICMS + ISS + IPI): R$ " . number_format($totalTax, 2, ',', '.') . "\n";
+
+// Exemplo de remoção dinâmica: calcular sem ISS
+$taxCalculatorWithoutISS = new IPIDecorator(new ICMSDecorator($basicCalculator));
+$totalTaxWithoutISS = $taxCalculatorWithoutISS->calculate($amount);
+
+echo "\nImposto total calculado (ICMS + IPI, sem ISS): R$ " . number_format($totalTaxWithoutISS, 2, ',', '.') . "\n";
 
 ?>
