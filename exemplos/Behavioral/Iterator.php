@@ -2,8 +2,8 @@
 // Classe que representa uma coleção de jogos da Nintendo
 class NintendoGamesCollection implements Iterator
 {
-    private $games = [];
-    private $position = 0;
+    private array $games = [];
+    private int $position = 0;
 
     public function __construct(array $games)
     {
@@ -12,31 +12,31 @@ class NintendoGamesCollection implements Iterator
     }
 
     // Retorna o jogo atual
-    public function current()
+    public function current(): mixed
     {
         return $this->games[$this->position];
     }
 
     // Retorna a chave atual (índice ou posição do jogo)
-    public function key()
+    public function key(): int
     {
         return $this->position;
     }
 
     // Avança para o próximo jogo
-    public function next()
+    public function next(): void
     {
         $this->position++;
     }
 
     // Reseta a posição para o início
-    public function rewind()
+    public function rewind(): void
     {
         $this->position = 0;
     }
 
     // Verifica se a posição atual é válida
-    public function valid()
+    public function valid(): bool
     {
         return isset($this->games[$this->position]);
     }
